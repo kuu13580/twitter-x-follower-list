@@ -93,7 +93,6 @@ if __name__ == "__main__":
     parser.add_argument("--target", "-t", type=str, help="最新版比較の対象指定", metavar=("follow or follower"), choices=["follow", "follower"])
     # 引数を解析
     args = parser.parse_args()
-    print(len(sys.argv))
     # 引数がない場合はGUIで実行
     if len(sys.argv) == 1:
         while True:
