@@ -1,5 +1,5 @@
 # twitter-x-follower-list
 ### ビルドメモ
 ```
-pyinstaller pyinstaller.spec --clean
+pyinstaller pyinstaller.spec --clean -y
 ```
