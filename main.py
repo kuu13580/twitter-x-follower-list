@@ -35,18 +35,18 @@ def mainGUI():
         diff_report(previous_list_file, new_list_file)
     elif mode == 4:
         print("比較対象を選択してください。(follow or follower)")
-        recent = input(">> ")
-        if recent not in ["follow", "follower"]:
+        target = input(">> ")
+        if target not in ["follow", "follower"]:
             print("不正な入力です。")
             return
         files = os.listdir()
-        files = [file for file in files if file.startswith(recent + "_") and file.endswith(".txt")]
+        files = [file for file in files if file.startswith(target + "_") and file.endswith(".txt")]
         if len(files) == 0:
             print("ファイルが見つかりませんでした。")
             return
         files.sort()
         recent_file = files[-1]
-        new_file = get_list(recent)
+        new_file = get_list(target)
         diff_report(recent_file, new_file)
 
 def mainCLI(args):
@@ -72,25 +72,25 @@ def mainCLI(args):
         new_list_file = args.files[1]
         diff_report(previous_list_file, new_list_file)
     elif mode == 4:
-        if args.recent is None:
+        if args.target is None:
             print("比較対象を指定してください。")
             return
-        recent = args.recent
+        target = args.target
         files = os.listdir()
-        files = [file for file in files if file.startswith(recent + "_") and file.endswith(".txt")]
+        files = [file for file in files if file.startswith(target + "_") and file.endswith(".txt")]
         if len(files) == 0:
             print("ファイルが見つかりませんでした。")
             return
         files.sort()
         recent_file = files[-1]
-        new_file = get_list(recent)
+        new_file = get_list(target)
         diff_report(recent_file, new_file)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Twitterのフォロー・フォロワー一覧を取得するスクリプト")
     parser.add_argument("--mode", "-m", type=int, help="実行内容を選択 1:フォロワー取得 2:フォロー取得 3:差分表示 4:最新版比較 0:終了", choices=range(5))
     parser.add_argument("--files", "-f", type=str, help="比較するファイルのパスを指定", nargs=2, metavar=("previous_list_file", "new_list_file"))
-    parser.add_argument("--recent", "-r", type=str, help="最新版比較の対象指定", metavar=("follow or follower"), choices=["follow", "follower"])
+    parser.add_argument("--target", "-t", type=str, help="最新版比較の対象指定", metavar=("follow or follower"), choices=["follow", "follower"])
     # 引数を解析
     args = parser.parse_args()
     print(len(sys.argv))
