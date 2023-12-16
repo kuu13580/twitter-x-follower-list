@@ -31,6 +31,12 @@ def get_list(target):
             driver.add_cookie(cookie)
 
     driver.get(url_home)
+    # ログインページに遷移されたらもう一度ログイン
+    if "ログイン" in driver.title:
+        input_wait.until(EC.title_contains("ホーム"))
+        # クッキーを保存
+        cookies = driver.get_cookies()
+        pickle.dump(cookies, open("cookies", "wb"))
     element = wait.until(EC.presence_of_element_located((By.LINK_TEXT, 'プロフィール')))
     element.click()
     element = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'フォロー中' if target == "follow" else "フォロワー")))
