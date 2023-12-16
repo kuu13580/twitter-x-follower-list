@@ -4,7 +4,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import pickle, os
-from time import sleep
 from datetime import datetime
 import sys
 
@@ -50,8 +49,8 @@ def get_list(target):
     if target == "follower":
         print("フォロワーを取得中...")
     while True:
-        driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-        sleep(2)
+        driver.execute_script('window.scrollBy(0, document.body.clientHeight);')
+        wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[contains(@aria-label, "読み込み中")]')))
         accounts = driver.find_element(By.XPATH, '//div[@aria-label="タイムライン: フォロー中"]' if target == "follow" else '//div[@aria-label="タイムライン: フォロワー"]')
         # 解析
         soup = BeautifulSoup(accounts.get_attribute("outerHTML"), "html.parser")
@@ -66,8 +65,10 @@ def get_list(target):
                 id = inner_div.select_one('div > div:nth-of-type(2) > div').get_text()
                 account_dict[id] = name
             except:
-                end_flag = True
-                break
+                inner_HTML = account_container.select_one('div[data-testid="cellInnerDiv"] > div > div')
+                if not len(inner_HTML.contents):
+                    end_flag = True
+                    break
         if end_flag:
             break
     print("完了")
