@@ -67,8 +67,10 @@ def get_list(target):
     prev_account = ""
     tmp_account = ""
     while True:
-        progress = min(round(len(account_dict) / shown_count * 100), 100)
-        print("\r", "0%", "|" * progress, " " * (100 - progress), "100%", end="")
+        col, _ = os.get_terminal_size()
+        factor = 2 if col < 108 else 1
+        progress = round(min(len(account_dict) / shown_count * 100 / factor, 100 / factor))
+        print("\r", "0%|", "|" * progress, " " * int(100 / factor - progress), "|100%", end="", sep="")
         wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@role="progressbar"]')))
         accounts = driver.find_element(By.XPATH, '//div[@aria-label="タイムライン: フォロー中"]' if target == "follow" else '//div[@aria-label="タイムライン: フォロワー"]')
         # 解析
@@ -102,7 +104,7 @@ def get_list(target):
         if end_flag:
             break
         driver.execute_script('window.scrollBy(0, document.body.clientHeight);')
-    print("完了")
+    print("\r", "0%|", "|" * int(100 / factor), "|100%", " 完了", sep="")
 
     # ファイル出力
     accounts = [f'{key} {value}' for key, value in account_dict.items()]
