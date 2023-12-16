@@ -1,5 +1,7 @@
 from get_list import get_list
 from diff_report import diff_report
+from tkinter import filedialog
+from time import sleep
 
 def main():
     print("実行内容を選択")
@@ -18,6 +20,16 @@ def main():
         get_list("follower")
     elif mode == 2:
         get_list("follow")
+    elif mode == 3:
+        typ = [('テキストファイル', '*.txt')]
+        dir = './'
+        print("比較元データを選択してください。")
+        sleep(1)
+        previous_list_file = filedialog.askopenfilename(title="比較元データを選択", filetypes = typ, initialdir = dir)
+        print("比較先データを選択してください。")
+        sleep(1)
+        new_list_file = filedialog.askopenfilename(title="比較先データを選択", filetypes = typ, initialdir = dir)
+        diff_report(previous_list_file, new_list_file)
 
 if __name__ == "__main__":
     while True:
