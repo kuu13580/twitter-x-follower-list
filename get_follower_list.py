@@ -65,7 +65,7 @@ print("完了")
 follower_list = [f'{key} {value}' for key, value in followers_dict.items()]
 now_str = datetime.now().strftime("%Y%m%d_%H%M")
 file_name = f"follower_list_{now_str}.txt"
-with open(f"follower_list_{now_str}.txt", mode="w", encoding="utf-8") as f:
+with open(file_name, mode="w", encoding="utf-8") as f:
     f.write(f"フォロワー数: {len(follower_list)}\n")
     f.write("\n".join(follower_list))
 print(f"{file_name}に保存しました。")
