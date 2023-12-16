@@ -114,6 +114,7 @@ def get_list(target):
         f.write(f"フォロー数: {len(accounts)}\n" if target == "follow" else f"フォロワー数: {len(accounts)}\n")
         f.write("\n".join(accounts))
     print(f"{file_name}に保存しました。")
+    return file_name
 
 if __name__ == "__main__":
     args = sys.argv
