@@ -3,45 +3,57 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.options import Options
 import pickle, os
 from datetime import datetime
 import sys
 from time import sleep
 
 def get_list(target):
-    # 開始
-    driver = webdriver.Chrome()
-    wait = WebDriverWait(driver, 10)
-    input_wait = WebDriverWait(driver, 1000)
-    url_home = "https://twitter.com/home"
 
     # クッキーがない場合はログイン
     if not os.path.exists("cookies"):
         # ログイン
+        driver = webdriver.Chrome()
+        input_wait = WebDriverWait(driver, 1000)
         url_login = "https://twitter.com/i/flow/login"
         driver.get(url_login)
         input_wait.until(EC.title_contains("ホーム"))
         # クッキーを保存
         cookies = driver.get_cookies()
         pickle.dump(cookies, open("cookies", "wb"))
-    else:
-        cookies = pickle.load(open("cookies", "rb"))
-        driver.get(url_home)
-        for cookie in cookies:
-            driver.add_cookie(cookie)
+        driver.quit()
+
+    # 開始
+    options = Options()
+    options.add_argument("--headless=new")
+    options.add_argument('window-size=1400,600')
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
+    options.add_argument("--user-agent=Chrome/120.0.6099.72")
+    options.add_experimental_option('prefs', {
+        'credentials_enable_service': False,
+        'profile': {'password_manager_enabled': False}
+    })
+    driver = webdriver.Chrome(options=options)
+    wait = WebDriverWait(driver, 10)
+    url_home = "https://twitter.com/home"
+    cookies = pickle.load(open("cookies", "rb"))
+    driver.get(url_home)
+    for cookie in cookies:
+        driver.add_cookie(cookie)
 
     driver.get(url_home)
-    # ログインページに遷移されたらもう一度ログイン
+    # ログインページに遷移されたらキャッシュクリア
     if "ログイン" in driver.title:
-        input_wait.until(EC.title_contains("ホーム"))
-        # クッキーを保存
-        cookies = driver.get_cookies()
-        pickle.dump(cookies, open("cookies", "wb"))
+        os.remove("cookies")
+        print("クッキーが無効です。再ログインしてください。")
+        driver.quit()
+        exit(1)
     element = wait.until(EC.presence_of_element_located((By.XPATH, '//a[@aria-label="プロフィール"]')))
     element.click()
     element = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'フォロー中' if target == "follow" else "フォロワー")))
     shown_count = int(element.text.split(None, 1)[0])
-    print(shown_count)
     element.click()
     element = wait.until(EC.presence_of_element_located((By.LINK_TEXT, 'フォロー中' if target == "follow" else "フォロワー")))
     element.click()
