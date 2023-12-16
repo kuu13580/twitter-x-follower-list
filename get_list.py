@@ -40,6 +40,8 @@ def get_list(target):
     element = wait.until(EC.presence_of_element_located((By.XPATH, '//a[@aria-label="プロフィール"]')))
     element.click()
     element = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'フォロー中' if target == "follow" else "フォロワー")))
+    shown_count = int(element.text.split(None, 1)[0])
+    print(shown_count)
     element.click()
     element = wait.until(EC.presence_of_element_located((By.LINK_TEXT, 'フォロー中' if target == "follow" else "フォロワー")))
     element.click()
@@ -53,6 +55,8 @@ def get_list(target):
     prev_account = ""
     tmp_account = ""
     while True:
+        progress = min(round(len(account_dict) / shown_count * 100), 100)
+        print("\r", "0%", "|" * progress, " " * (100 - progress), "100%", end="")
         wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@role="progressbar"]')))
         accounts = driver.find_element(By.XPATH, '//div[@aria-label="タイムライン: フォロー中"]' if target == "follow" else '//div[@aria-label="タイムライン: フォロワー"]')
         # 解析
