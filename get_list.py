@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import pickle, os
 from datetime import datetime
 import sys
+from time import sleep
 
 def get_list(target):
     # 開始
@@ -48,9 +49,11 @@ def get_list(target):
         print("フォロー中のユーザーを取得中...")
     if target == "follower":
         print("フォロワーを取得中...")
+    buffer_count = 0
+    prev_account = ""
+    tmp_account = ""
     while True:
-        driver.execute_script('window.scrollBy(0, document.body.clientHeight);')
-        wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[contains(@aria-label, "読み込み中")]')))
+        wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@role="progressbar"]')))
         accounts = driver.find_element(By.XPATH, '//div[@aria-label="タイムライン: フォロー中"]' if target == "follow" else '//div[@aria-label="タイムライン: フォロワー"]')
         # 解析
         soup = BeautifulSoup(accounts.get_attribute("outerHTML"), "html.parser")
@@ -64,13 +67,25 @@ def get_list(target):
                 name = inner_div.select_one('div > div').get_text()
                 id = inner_div.select_one('div > div:nth-of-type(2) > div').get_text()
                 account_dict[id] = name
+                tmp_account = id
             except:
+                # 例外を5秒まで許容
+                if buffer_count < 5:
+                    sleep(1)
+                    buffer_count += 1
+                    continue
                 inner_HTML = account_container.select_one('div[data-testid="cellInnerDiv"] > div > div')
                 if not len(inner_HTML.contents):
                     end_flag = True
                     break
+        # 末尾のアカウントが変更されたらリセット
+        if prev_account != tmp_account:
+            buffer_count = 0
+        # 末尾のアカウントを記録
+        prev_account = tmp_account
         if end_flag:
             break
+        driver.execute_script('window.scrollBy(0, document.body.clientHeight);')
     print("完了")
 
     # ファイル出力
