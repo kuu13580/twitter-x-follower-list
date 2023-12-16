@@ -37,7 +37,7 @@ def get_list(target):
         # クッキーを保存
         cookies = driver.get_cookies()
         pickle.dump(cookies, open("cookies", "wb"))
-    element = wait.until(EC.presence_of_element_located((By.LINK_TEXT, 'プロフィール')))
+    element = wait.until(EC.presence_of_element_located((By.XPATH, '//a[@aria-label="プロフィール"]')))
     element.click()
     element = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, 'フォロー中' if target == "follow" else "フォロワー")))
     element.click()
