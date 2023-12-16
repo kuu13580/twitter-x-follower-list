@@ -15,16 +15,24 @@ def diff_report(prev_list_path, new_list_path):
         prev_count = int(lines[0].split(None, 1)[1])
         for line in lines[1:]:
             prev_list.add(line.split(None, 1)[0])
-            prev_map[line.split(None, 1)[0]] = line.split(None, 1)[1].strip()
+            if len(line.split(None, 1)) == 1:
+                prev_map[line.split(None, 1)[0]] = ""
+            else:
+                prev_map[line.split(None, 1)[0]] = line.split(None, 1)[1].strip()
+                
 
     with open(new_list_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
         new_count = int(lines[0].split(None, 1)[1])
         for line in lines[1:]:
             new_list.add(line.split(None, 1)[0])
-            new_map[line.split(None, 1)[0]] = line.split(None, 1)[1].strip()
+            if len(line.split(None, 1)) == 1:
+                new_map[line.split(None, 1)[0]] = ""
+            else:
+                new_map[line.split(None, 1)[0]] = line.split(None, 1)[1].strip()
 
     # 増減表示
+    print()
     count_diff = new_count - prev_count
     if count_diff > 0:
         print(f"増減： \033[32m{count_diff}\033[0m")
