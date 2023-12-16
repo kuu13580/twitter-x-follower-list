@@ -27,10 +27,10 @@ def get_list(target):
     # 開始
     options = Options()
     options.add_argument("--headless=new")
-    options.add_argument('window-size=1400,600')
+    options.add_argument('window-size=1000,2000')
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option('useAutomationExtension', False)
-    options.add_argument("--user-agent=Chrome/120.0.6099.72")
+    options.add_argument("--user-agent=ozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
     options.add_experimental_option('prefs', {
         'credentials_enable_service': False,
         'profile': {'password_manager_enabled': False}
