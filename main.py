@@ -39,7 +39,8 @@ def mainGUI():
         if target not in ["follow", "follower"]:
             print("不正な入力です。")
             return
-        files = os.listdir()
+        current_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        files = os.listdir(current_dir)
         files = [file for file in files if file.startswith(target + "_") and file.endswith(".txt")]
         if len(files) == 0:
             print("ファイルが見つかりませんでした。")
@@ -71,12 +72,14 @@ def mainCLI(args):
         previous_list_file = args.files[0]
         new_list_file = args.files[1]
         diff_report(previous_list_file, new_list_file)
+        input("Enterキーを押して終了します。")
     elif mode == 4:
         if args.target is None:
             print("比較対象を指定してください。")
             return
         target = args.target
-        files = os.listdir()
+        current_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        files = os.listdir(current_dir)
         files = [file for file in files if file.startswith(target + "_") and file.endswith(".txt")]
         if len(files) == 0:
             print("ファイルが見つかりませんでした。")
@@ -85,6 +88,7 @@ def mainCLI(args):
         recent_file = files[-1]
         new_file = get_list(target)
         diff_report(recent_file, new_file)
+        input("Enterキーを押して終了します。")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Twitterのフォロー・フォロワー一覧を取得するスクリプト")

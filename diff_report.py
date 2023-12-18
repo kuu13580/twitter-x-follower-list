@@ -2,6 +2,17 @@ import sys
 import os
 
 def diff_report(prev_list_path, new_list_path):
+    # 現在のディレクトリを取得
+    current_dir = current_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+    # ファイルが存在しない場合は終了
+    if os.path.exists(f"{current_dir}/{prev_list_path}"):
+        prev_list_path = f"{current_dir}/{prev_list_path}"
+    if os.path.exists(f"{current_dir}/{new_list_path}"):
+        new_list_path = f"{current_dir}/{new_list_path}"
+    if not os.path.exists(prev_list_path) or not os.path.exists(new_list_path):
+        print("ファイルが見つかりませんでした。")
+        exit(1)
     prev_count = 0
     new_count = 0
 

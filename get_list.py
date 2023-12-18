@@ -11,7 +11,7 @@ from time import sleep
 
 def get_list(target):
     # 現在のディレクトリを取得
-    current_dir = os.getcwd()
+    current_dir = current_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
     # クッキーがない場合はログイン
     if not os.path.exists(f"{current_dir}/cookies"):
@@ -111,7 +111,7 @@ def get_list(target):
     # ファイル出力
     accounts = [f'{key} {value}' for key, value in account_dict.items()]
     now_str = datetime.now().strftime("%Y%m%d_%H%M")
-    file_name = f"follow_list_{now_str}.txt" if target == "follow" else f"follower_list_{now_str}.txt"
+    file_name = f"{current_dir}/follow_list_{now_str}.txt" if target == "follow" else f"{current_dir}/follower_list_{now_str}.txt"
     with open(file_name, mode="w", encoding="utf-8") as f:
         f.write(f"フォロー数: {len(accounts)}\n" if target == "follow" else f"フォロワー数: {len(accounts)}\n")
         f.write("\n".join(accounts))
