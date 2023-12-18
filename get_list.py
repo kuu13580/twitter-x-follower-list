@@ -10,9 +10,11 @@ import sys
 from time import sleep
 
 def get_list(target):
+    # 現在のディレクトリを取得
+    current_dir = os.getcwd()
 
     # クッキーがない場合はログイン
-    if not os.path.exists("cookies"):
+    if not os.path.exists(f"{current_dir}/cookies"):
         # ログイン
         driver = webdriver.Chrome()
         input_wait = WebDriverWait(driver, 1000)
@@ -21,7 +23,7 @@ def get_list(target):
         input_wait.until(EC.title_contains("ホーム"))
         # クッキーを保存
         cookies = driver.get_cookies()
-        pickle.dump(cookies, open("cookies", "wb"))
+        pickle.dump(cookies, open(f"{current_dir}/cookies", "wb"))
         driver.quit()
 
     # 開始
@@ -38,7 +40,7 @@ def get_list(target):
     driver = webdriver.Chrome(options=options)
     wait = WebDriverWait(driver, 10)
     url_home = "https://twitter.com/home"
-    cookies = pickle.load(open("cookies", "rb"))
+    cookies = pickle.load(open(f"{current_dir}/cookies", "rb"))
     driver.get(url_home)
     for cookie in cookies:
         driver.add_cookie(cookie)
@@ -46,7 +48,7 @@ def get_list(target):
     driver.get(url_home)
     # ログインページに遷移されたらキャッシュクリア
     if "ログイン" in driver.title:
-        os.remove("cookies")
+        os.remove(f"{current_dir}/cookies")
         print("クッキーが無効です。再ログインしてください。")
         driver.quit()
         exit(1)
